@@ -16,13 +16,9 @@ namespace Cafe.Controllers
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    public class TestController : Controller
+    public class TestController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         [HttpGet]
         public async Task<IActionResult> gets()
