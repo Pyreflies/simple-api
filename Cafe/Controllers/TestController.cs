@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Cafe.Controllers
 {
+    
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
