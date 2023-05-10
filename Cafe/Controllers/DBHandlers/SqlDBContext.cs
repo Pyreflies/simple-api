@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Data;
 using System.Transactions;
+using System.Reflection;
+using Newtonsoft.Json.Linq;
 
 namespace Cafe.Controllers.DBHandlers
 {
@@ -37,7 +39,7 @@ namespace Cafe.Controllers.DBHandlers
             var configuration = builder.Build();
             return configuration["ConnectionStrings:DefaultConnection"];
         }
-        public static List<Dictionary<string, object>> SelectQuery(string sql)
+        public static List<T> SelectQuery<T>(string sql)
         {
             try
             {
@@ -49,20 +51,23 @@ namespace Cafe.Controllers.DBHandlers
                         con.Open();
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         da.Fill(dt);
-                        List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-                        Dictionary<string, object> row;
+                        List<T> Values = new List<T>();
                         if (dt.Rows.Count <= 0) throw new ArgumentException("ไม่พบข้อมูล");
                         foreach (DataRow dr in dt.Rows)
                         {
-                            row = new Dictionary<string, object>();
+                            T obj = Activator.CreateInstance<T>();
                             foreach (DataColumn col in dt.Columns)
                             {
-                                row.Add(col.ColumnName, dr[col]);
+                                PropertyInfo property = obj.GetType().GetProperty(col.ColumnName);
+                                if (property != null && dr[col] != DBNull.Value)
+                                {
+                                    property.SetValue(obj, dr[col]);
+                                }
                             }
-                            rows.Add(row);
+                            Values.Add(obj);
                         }
                         con.Close();
-                        return rows;
+                        return Values;
                     }
                 }
             }

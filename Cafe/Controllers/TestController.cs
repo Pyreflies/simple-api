@@ -27,8 +27,8 @@ namespace Cafe.Controllers
             string sql = string.Format(@"SELECT * FROM TB_USERS");
             try
             {
-                var json = SqlDBContext.SelectQuery(sql);
-                return Ok(json);
+                var json = SqlDBContext.SelectQuery<UserParam>(sql).ToList();
+                return Ok(new StatusResult<UserParam>( "isSuccess", 200,true,json));
             }
             catch (Exception ex)
             {
@@ -42,8 +42,8 @@ namespace Cafe.Controllers
             string sql = string.Format(@"SELECT * FROM TB_USERS WHERE ID = '{0}'", id);
             try
             {
-                var json = SqlDBContext.SelectQuery(sql);
-                return Ok(json);
+                var json = SqlDBContext.SelectQuery<UserParam>(sql).ToList();
+                return Ok(new StatusResult<UserParam>("isSuccess", 200, true, json));
             }
             catch (Exception ex)
             {
@@ -52,7 +52,7 @@ namespace Cafe.Controllers
         }
 
         [HttpPost]
-        public async Task<StatusResult> post(UserParam user)
+        public async Task<IActionResult> post(UserParam user)
         {
             string insert = string.Format(@"INSERT INTO TB_USERS
                 (NAME,LASTNAME,EMAIL) 
@@ -60,16 +60,16 @@ namespace Cafe.Controllers
             try
             {
                 SqlDBContext.ExecuteNonQuery(insert);
-                return StatusResult.Ok();
+                return Ok();
             }
             catch (Exception ex)
             {
-                return StatusResult.Error("เกิดข้อผิดพลาด");
+                return Ok("เกิดข้อผิดพลาด");
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<StatusResult> put(UserParam user)
+        public async Task<IActionResult> put(UserParam user)
         {
             string update = string.Format(@"UPDATE TB_USERS SET
                 NAME = '{0}' ,
@@ -79,26 +79,26 @@ namespace Cafe.Controllers
             try
             {
                 SqlDBContext.ExecuteNonQuery(update);
-                return StatusResult.Ok();
+                return Ok();
             }
             catch (Exception ex)
             {
-                return StatusResult.Error("เกิดข้อผิดพลาด");
+                return Ok("เกิดข้อผิดพลาด");
             }
         }
         [HttpDelete("{id}")]
-        public async Task<StatusResult> delete(UserParam user)
+        public async Task<IActionResult> delete(UserParam user)
         {
             string delete = string.Format(@"DELETE FROM TB_USERS SET
                 where ID = {0}",user.ID);
             try
             {
                 SqlDBContext.ExecuteNonQuery(delete);
-                return StatusResult.Ok();
+                return Ok();
             }
             catch (Exception ex)
             {
-                return StatusResult.Error("เกิดข้อผิดพลาด");
+                return Ok("เกิดข้อผิดพลาด");
             }
         }
     }
