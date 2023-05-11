@@ -27,6 +27,23 @@ namespace Cafe.Models.ReadModels
         }
 
     }
+    public class StatusResult
+    {
+        public bool isSuccess { get; set; }
+        public string statusDesc { get; set; }
+        public int statusCode { get; set; }
+        public string message { get; set; }
+        public DateTime timeStamp { get; set; }
+
+        public StatusResult(string imessage, int status, bool success)
+        {
+            message = imessage;
+            statusCode = status;
+            isSuccess = success;
+            timeStamp = DateTime.UtcNow;
+        }
+
+    }
 
 
 

@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using Cafe.Controllers.Params;
 using Cafe.Controllers.DBHandlers;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Cafe.Models.ReadModels;
 using System.Linq;
-using Microsoft.Extensions.Logging;
 
 namespace Cafe.Controllers
 {
@@ -19,8 +15,6 @@ namespace Cafe.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-
         [HttpGet]
         public async Task<IActionResult> gets()
         {
@@ -32,7 +26,8 @@ namespace Cafe.Controllers
             }
             catch (Exception ex)
             {
-                return Ok("เกิดข้อผิดพลาด");
+                return Ok(new StatusResult("unSuccessful", 500, false));
+
             }
         }
 
@@ -47,7 +42,8 @@ namespace Cafe.Controllers
             }
             catch (Exception ex)
             {
-                return Ok("เกิดข้อผิดพลาด");
+                return Ok(new StatusResult("unSuccessful", 500, false));
+
             }
         }
 
@@ -60,11 +56,13 @@ namespace Cafe.Controllers
             try
             {
                 SqlDBContext.ExecuteNonQuery(insert);
-                return Ok();
+                return Ok(new StatusResult("บันทึกสำเร็จ", 200, true));
+
             }
             catch (Exception ex)
             {
-                return Ok("เกิดข้อผิดพลาด");
+                return Ok(new StatusResult("เกิดข้อผิดพลาด : " + ex, 500, false));
+
             }
         }
 
@@ -79,11 +77,11 @@ namespace Cafe.Controllers
             try
             {
                 SqlDBContext.ExecuteNonQuery(update);
-                return Ok();
+                return Ok(new StatusResult("อัพเดตสำเร็จ", 200, true));
             }
             catch (Exception ex)
             {
-                return Ok("เกิดข้อผิดพลาด");
+                return Ok(new StatusResult("เกิดข้อผิดพลาด : " + ex, 500, false));
             }
         }
         [HttpDelete("{id}")]
@@ -94,11 +92,11 @@ namespace Cafe.Controllers
             try
             {
                 SqlDBContext.ExecuteNonQuery(delete);
-                return Ok();
+                return Ok(new StatusResult("ลบสำเร็จ", 200, true));
             }
             catch (Exception ex)
             {
-                return Ok("เกิดข้อผิดพลาด");
+                return Ok(new StatusResult("เกิดข้อผิดพลาด : " + ex, 500, false));
             }
         }
     }
